@@ -24,11 +24,13 @@ router.post('/register', async (req, res) => { // triggered when frontend makes 
             email,
             password
         });
-
+        
+        //console.log("About to save user:", email);
         // generate a cryptographic salt w 10 rnds of complexity, wait for it to finish before continuing
         const noise = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(password, noise);
         await user.save();
+        //console.log("User saved successfully.");
 
         // creating an access token
         const payload = {
@@ -72,7 +74,7 @@ router.post('/login', async (req, res) => {
                 id: user.id
             }
         };
-        jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: '1hr'}, (req, res) => {
+        jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: '1hr'}, (err, token) => {
             // return the token to the client
             if (err) throw err;
             res.json({token});

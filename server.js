@@ -12,6 +12,12 @@ const port = process.env.PORT; // comes from .env
 app.use(cors()); // for cross-origin requests
 app.use(express.json()); // for parsing json into request bodies
 
+/*
+console.log("PORT:", process.env.PORT);
+console.log("MONGO_URI:", process.env.MONGO_URI);
+console.log("JWT_SECRET:", process.env.JWT_SECRET ? "Loaded" : "Missing");
+*/
+
 // connecting to MongoDB using Mongoose
 // mongoDB connection string
 const uri = process.env.MONGO_URI;
@@ -21,6 +27,11 @@ mongoose.connect(uri)
     .then(() => console.log('MongoDB connected')) // cfms the app is connected and working
     .catch(err => console.log(err)); // helps with debugging connection issues
 
+app.use((req, res, next) => {
+  console.log(`[${req.method}] ${req.url}`);
+  next();
+});
+
 // routing system -- handling routes
 // .use() is ususally used for handling all HTTP methods for a specific route/ set of
 // used here to mount a specific route handler
@@ -28,6 +39,8 @@ mongoose.connect(uri)
 // auth.js file contains the logic for handling the specific routes
 // require executes the auth.js code and attach its routes to the /api/auth path
 app.use('/api/auth', require('./routes/auth'));
+
+mongoose.set('debug', true);
 
 // basic route -- for GET requests (retrieving data)
 // serves as a health check / simple test route to confirm server is up and running

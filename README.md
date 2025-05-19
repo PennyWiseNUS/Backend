@@ -27,7 +27,7 @@ MONGO_URI=mongodb://localhost:27017/authdb
 JWT_SECRET=your_jwt_secret_key
 ```
 ## Start MongoDB:
-Ensure MongoDB is running: net start MongoDB or mongod --dbpath C:\data\db.
+Ensure MongoDB is running: net start MongoDB or mongod --dbpath C:\data\db in Powershell of Command Prompt Administrator.
 
 ## Run the Backend
 ``` bash
