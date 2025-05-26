@@ -35,7 +35,8 @@ router.post('/register', async (req, res) => { // triggered when frontend makes 
         // creating an access token
         const payload = {
             user: {
-                id: user.id
+                id: user.id,
+                email: user.email
             }
         };
         // signing (verifying) the payload and returning a token
@@ -71,7 +72,8 @@ router.post('/login', async (req, res) => {
         // create access token
         const payload = {
             user: {
-                id: user.id
+                id: user.id,
+                email: user.email
             }
         };
         jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: '1hr'}, (err, token) => {
