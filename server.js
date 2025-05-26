@@ -40,6 +40,13 @@ app.use((req, res, next) => {
 // require executes the auth.js code and attach its routes to the /api/auth path
 app.use('/api/auth', require('./routes/auth'));
 
+// AddEntry route
+const authToken = require('./middleware/authToken');
+// first arg: base url path midware and route handlers will applu to
+// second arg: handles user verification - whether access is available
+// third arg: adding a new Entry logic or getting an entry 
+app.use('/api/entries', authToken, require('./routes/entries'))
+
 mongoose.set('debug', true);
 
 // basic route -- for GET requests (retrieving data)

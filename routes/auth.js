@@ -25,12 +25,12 @@ router.post('/register', async (req, res) => { // triggered when frontend makes 
             password
         });
         
-        //console.log("About to save user:", email);
+        console.log("About to save user:", email);
         // generate a cryptographic salt w 10 rnds of complexity, wait for it to finish before continuing
         const noise = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(password, noise);
         await user.save();
-        //console.log("User saved successfully.");
+        console.log("User saved successfully.");
 
         // creating an access token
         const payload = {
