@@ -47,6 +47,9 @@ const authToken = require('./middleware/authToken');
 // third arg: adding a new Entry logic or getting an entry 
 app.use('/api/entries', authToken, require('./routes/entries'))
 
+// Income Extraction route
+app.use('/api', authToken, require('./routes/income'));
+
 mongoose.set('debug', true);
 
 // basic route -- for GET requests (retrieving data)

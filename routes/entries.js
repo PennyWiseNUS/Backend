@@ -9,7 +9,8 @@ router.post('/', async (req, res) => {
     // in the event any portion hits an error, wrap the whole thing in a try class
     try {
         // check for any missing fields, if present return an error
-        if (!amount || !category || !type || !date || !notes) {
+        if (!amount || !category || !type || !date) {
+            console.log("Missing something");
             return res.status(400).json({msg: "Missing Parameters!"})
         };
         // making sure user does not type in inaccurate values to amount
