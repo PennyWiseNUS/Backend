@@ -45,7 +45,7 @@ const authToken = require('./middleware/authToken');
 // first arg: base url path midware and route handlers will applu to
 // second arg: handles user verification - whether access is available
 // third arg: adding a new Entry logic or getting an entry 
-app.use('/api/entries', authToken, require('./routes/entries'))
+app.use('//entries', authToken, require('./routes/entries'))
 
 // Income Extraction route
 app.use('/api', authToken, require('./routes/income'));
