@@ -48,7 +48,10 @@ const authToken = require('./middleware/authToken');
 app.use('/api/entries', authToken, require('./routes/entries'))
 
 // Income Extraction route
-app.use('/api', authToken, require('./routes/income'));
+app.use('/api/income', authToken, require('./routes/income'));
+
+// Expense Extraction route
+app.use('/api/expense', authToken, require('./routes/expense'));
 
 mongoose.set('debug', true);
 

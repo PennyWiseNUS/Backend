@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const Entry = require('../models/Entry');
 
 // getting the data from an endpoint provided by the authToken middleware
-router.get('/income', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         // getting the user id from current user making the request (based on the access token created in auth.js) 
         const userID = req.user.id;
