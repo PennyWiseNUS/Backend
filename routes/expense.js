@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const Entry = require('../models/Entry');
 
 // GET /api/expense — return expense transactions and monthly breakdown
-router.get('/expense', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
       const userID = req.user.id;
   
