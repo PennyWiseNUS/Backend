@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
       const userID = req.user.id;
   
       const today = new Date();
-      const currentMonth = today.getMonth() + 1;
+      const currentMonth = today.getMonth();
       const currentYear = today.getFullYear();
   
       // Fetch current month's expenses
@@ -17,8 +17,8 @@ router.get('/', async (req, res) => {
         userID,
         type: 'expense',
         date: {
-          $gte: new Date(currentYear, currentMonth - 1, 1),
-          $lt: new Date(currentYear, currentMonth, 1),
+          $gte: new Date(currentYear, currentMonth - 6, 1),
+          $lt: new Date(currentYear, currentMonth + 1, 1),
         },
       }).select('amount category date notes');
   
