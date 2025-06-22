@@ -12,18 +12,18 @@ router.get('/', async (req, res) => {
       const currentMonth = today.getMonth();
       const currentYear = today.getFullYear();
   
-      // Fetch current month's expenses
+      const monthsToTrack = 6;
+      // Fetch 6 months expenses
       const expenseTransactions = await Entry.find({
         userID,
         type: 'expense',
-        date: {
-          $gte: new Date(currentYear, currentMonth - 6, 1),
+        entryDate: {
+          $gte: new Date(currentYear, currentMonth - monthsToTrack, 1),
           $lt: new Date(currentYear, currentMonth + 1, 1),
         },
-      }).select('amount category date notes');
+      }).select('amount category entryDate notes');
   
       // Track past 6 months
-      const monthsToTrack = 6;
       const trackedMonthlyData = [];
   
       for (let i = monthsToTrack - 1; i >= 0; i--) {
@@ -33,7 +33,7 @@ router.get('/', async (req, res) => {
   
         const [expense] = await Promise.all([
           Entry.aggregate([
-            { $match: { userID, type: 'expense', date: { $gte: monthStart, $lt: monthEnd } } },
+            { $match: { userID, type: 'expense', entryDate: { $gte: monthStart, $lt: monthEnd } } },
             { $group: { _id: null, total: { $sum: '$amount' } } },
           ]),
         ]);
