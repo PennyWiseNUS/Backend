@@ -42,10 +42,12 @@ app.use('/api/auth', require('./routes/auth'));
 
 // AddEntry route
 const authToken = require('./middleware/authToken');
-// first arg: base url path midware and route handlers will applu to
+// first arg: base url path midware and route handlers will apply to
 // second arg: handles user verification - whether access is available
 // third arg: adding a new Entry logic or getting an entry 
 app.use('/api/entries', authToken, require('./routes/entries'))
+// additional route for loan entries
+app.use('/api/loanEntries', authToken, require('./routes/loanEntries'))
 
 // Income Extraction route
 app.use('/api', authToken, require('./routes/income'));
