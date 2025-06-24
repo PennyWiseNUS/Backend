@@ -5,8 +5,12 @@ const EntrySchema = new mongoose.Schema({
     category: {type: String, required: true},
     // enum is to restrict the allowed values
     type: {type: String, enum: ['expense', 'income'], required: true},
-    date: {type: Date, required: true},
+    entryDate: {type: Date, required: true},
     notes: {type: String},
+    // for recurring entries
+    isRecurring: {type: Boolean, default: false},
+    recurrenceFrequency: {type: String, enum: ['daily', 'weekly', 'monthly'], default: 'Monthly'},
+    recurrenceEndDate: {type: Date},
     // user association
     userId: {type: String, required: true},
     }, 

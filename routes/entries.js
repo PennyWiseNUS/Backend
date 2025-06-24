@@ -5,14 +5,18 @@ const Entry = require('../models/Entry');
 // for adding an entry
 router.post('/', async (req, res) => {
     // destructure the variables in the req first
-    const {amount, category, type, date, notes} = req.body;
+    const {amount, category, type, entryDate, notes, isRecurring, recurrenceFrequency, recurrenceEndDate} = req.body;
     // in the event any portion hits an error, wrap the whole thing in a try class
     try {
         // check for any missing fields, if present return an error
-        if (!amount || !category || !type || !date) {
+        if (!amount || !category || !type || !entryDate) {
             console.log("Missing something");
             return res.status(400).json({msg: "Missing Parameters!"})
         };
+        if (isRecurring && (!recurrenceFrequency || !recurrenceEndDate)) {
+            console.log("Missing recurring fields");
+            return res.status(400).json({msg: "Missing Parameters!"})
+        }
         // making sure user does not type in inaccurate values to amount
         const amountNumber = parseFloat(amount);
         if (isNaN(amountNumber)) {
@@ -26,8 +30,11 @@ router.post('/', async (req, res) => {
             amount: amountNumber,
             category: category,
             type: type,
-            date: new Date(date), // conversion to date
+            entryDate: new Date(entryDate), // conversion to date
             notes: notes,
+            isRecurring: isRecurring,
+            recurrenceFrequency: recurrenceFrequency,
+            recurrenceEndDate: isRecurring ? new Date(recurrenceEndDate) : null, 
             userId: req.user.user.id // based on the payload 
         });
         // wait for the newEntry to be saved then output the success message
