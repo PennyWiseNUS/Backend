@@ -5,8 +5,10 @@ const LoanEntrySchema = new mongoose.Schema({
     interestRate: {type: Number, required: true},
     repaymentDate: {type: Date, required: true},
     repaidAmount: {type: Number, default: 0},
-    date: {type: Date, required: true},
     notes: {type: String},
+    isRecurring: {type: Boolean, default: false},
+    recurrenceFrequency: {type: String, enum: ['daily', 'weekly', 'monthly', 'annually'], default: 'Monthly'},
+    recurrenceEndDate: {type: Date},
     // user association
     userId: {type: String, required: true},
     }, 

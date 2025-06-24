@@ -5,11 +5,11 @@ const loanEntry = require('../models/LoanEntry');
 // for adding an entry
 router.post('/', async (req, res) => {
     // destructure the variables in the req first
-    const {notes, amount, interestRate, repaymentDate, repaidAmount, date} = req.body;
+    const {notes, amount, interestRate, repaymentDate, repaidAmount, isRecurring, recurrenceFrequency, recurrenceEndDate} = req.body;
     // in the event any portion hits an error, wrap the whole thing in a try class
     try {
         // check for any missing fields, if present return an error
-        if (!amount || !interestRate || !repaymentDate || !date) {
+        if (!amount || !interestRate || !repaymentDate) {
             console.log("Missing something");
             return res.status(400).json({msg: "Missing Parameters!"})
         };
@@ -27,7 +27,9 @@ router.post('/', async (req, res) => {
             amount: amountNumber,
             interestRate: interestRate,
             repaymentDate: new Date(repaymentDate),
-            date: new Date(date), // conversion to date
+            isRecurring: isRecurring,
+            recurrenceFrequency: isRecurring ? recurrenceFrequency : null,
+            recurrenceEndDate: isRecurring ? new Date(recurrenceEndDate) : null,
             userId: req.user.user.id // based on the payload 
         });
         // wait for the newEntry to be saved then output the success message
