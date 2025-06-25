@@ -9,7 +9,7 @@ const EntrySchema = new mongoose.Schema({
     notes: {type: String},
     // for recurring entries
     isRecurring: {type: Boolean, default: false},
-    recurrenceFrequency: {type: String, enum: ['daily', 'weekly', 'monthly'], default: 'Monthly'},
+    recurrenceFrequency: {type: String, enum: ['Daily', 'Weekly', 'Monthly', 'Annually'], default: 'Monthly'},
     recurrenceEndDate: {type: Date},
     // user association
     userId: {type: String, required: true},
