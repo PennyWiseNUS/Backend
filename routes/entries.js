@@ -35,6 +35,7 @@ router.post('/', async (req, res) => {
             isRecurring: isRecurring,
             recurrenceFrequency: recurrenceFrequency,
             recurrenceEndDate: isRecurring ? new Date(recurrenceEndDate) : null, 
+            nextReminderDate: isRecurring ? new Date(entryDate) + recurrenceFrequency : null, // set to entryDate initially
             userId: req.user.user.id // based on the payload 
         });
         // wait for the newEntry to be saved then output the success message
