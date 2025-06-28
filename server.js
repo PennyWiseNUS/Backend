@@ -6,7 +6,7 @@ require('dotenv').config(); // loads env var from .env to process.env
 
 // setting up of the Express app and choosing the port number
 const app = express(); // main express application
-const port = process.env.PORT; // comes from .env
+const port = process.env.PORT || 5000; // comes from .env
 
 // adding middleware -- a function that runs between receiving a request and sending a response
 app.use(cors()); // for cross-origin requests
@@ -42,13 +42,18 @@ app.use('/api/auth', require('./routes/auth'));
 
 // AddEntry route
 const authToken = require('./middleware/authToken');
-// first arg: base url path midware and route handlers will applu to
+// first arg: base url path midware and route handlers will apply to
 // second arg: handles user verification - whether access is available
 // third arg: adding a new Entry logic or getting an entry 
 app.use('/api/entries', authToken, require('./routes/entries'))
+// additional route for loan entries
+app.use('/api/loanEntries', authToken, require('./routes/loanEntries'))
 
 // Income Extraction route
-app.use('/api', authToken, require('./routes/income'));
+app.use('/api/income', authToken, require('./routes/income'));
+
+// Expense Extraction route
+app.use('/api/expense', authToken, require('./routes/expense'));
 
 mongoose.set('debug', true);
 

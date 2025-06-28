@@ -1,13 +1,11 @@
 const mongoose = require('mongoose');
 
-const EntrySchema = new mongoose.Schema({
+const LoanEntrySchema = new mongoose.Schema({
     amount: {type: Number, required: true},
-    category: {type: String, required: true},
-    // enum is to restrict the allowed values
-    type: {type: String, enum: ['expense', 'income'], required: true},
-    entryDate: {type: Date, required: true},
+    interestRate: {type: Number, required: true},
+    repaymentDate: {type: Date, required: true},
+    repaidAmount: {type: Number, default: 0},
     notes: {type: String},
-    // for recurring entries
     isRecurring: {type: Boolean, default: false},
     recurrenceFrequency: {type: String, enum: ['Daily', 'Weekly', 'Monthly', 'Annually'], default: 'Monthly'},
     recurrenceEndDate: {type: Date},
@@ -17,4 +15,4 @@ const EntrySchema = new mongoose.Schema({
     {timestamps: true}
 );
 
-module.exports = mongoose.model('Entry', EntrySchema);
+module.exports = mongoose.model('LoanEntry', LoanEntrySchema);
