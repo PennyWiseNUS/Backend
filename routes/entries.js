@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Entry = require('../models/Entry');
+const Notification = require('../models/Notification');
+const { startOfDay } = require('date-fns');
+const { createNotificationForEntry, getNextDate } = require('../utils/helpers');
 
 // for adding an entry
 router.post('/', async (req, res) => {
@@ -28,37 +31,6 @@ router.post('/', async (req, res) => {
         };
         console.log("Backend New Entry Creation")
         // else save the entry 
-        let nextReminderDate;
-        if (isRecurring) {
-            const entryDateCopy = new Date(entryDate);
-
-            switch (recurrenceFrequency) {
-                case 'Daily':
-                    console.log("currentDate");
-                    nextReminderDate = new Date(entryDateCopy);
-                    nextReminderDate.setDate(entryDateCopy.getDate() + 1); // set to next day
-                    break;
-                case 'Weekly':
-                    nextReminderDate = new Date(currentDate);
-                    nextReminderDate.setDate(entryDateCopy.getDate() + 7); 
-                    break;
-                case 'Monthly':
-                    nextReminderDate = new Date(currentDate);
-                    nextReminderDate.setMonth(entryDateCopy.getMonth() + 1); 
-                    break;
-                case 'Annually':
-                    nextReminderDate = new Date(currentDate);
-                    nextReminderDate.setFullYear(entryDateCopy.getFullYear() + 1); 
-                    break;
-                default:
-                    nextReminderDate = null;
-                    return res.status(400).json({msg: "Invalid Recurrence Frequency!"});
-            }
-        } else {
-            nextReminderDate = null;
-        }
-        console.log("Next Reminder Date: ", nextReminderDate);
-
         const newEntry = new Entry({
             amount: amountNumber,
             category: category,
@@ -68,12 +40,20 @@ router.post('/', async (req, res) => {
             isRecurring: isRecurring,
             recurrenceFrequency: isRecurring ? recurrenceFrequency : null,
             recurrenceEndDate: isRecurring ? new Date(recurrenceEndDate) : null, 
-            nextReminderDate: nextReminderDate, // set to entryDate initially
+            nextReminderDate: null,
             userId: req.user.user.id // based on the payload 
         });
+        if (req.body.isRecurring) {
+            const entryDateStart = startOfDay(new Date(req.body.entryDate));
+            const nextDate = getNextDate(entryDateStart, req.body.recurrenceFrequency);
+            const nextReminderDate = startOfDay(nextDate);
+            newEntry.nextReminderDate = nextReminderDate <= new Date(req.body.recurrenceEndDate) ? nextReminderDate : null;
+          }
+        console.log(newEntry);
         console.log("Backend New Entry Successfully Created")
         // wait for the newEntry to be saved then output the success message
         await newEntry.save();
+        await createNotificationForEntry(newEntry);
         res.status(201).json({msg: "New Entry saved successfully!"});
     } catch (err) {
         res.status(400).json({msg: 'Error saving Entry', error: err.message})

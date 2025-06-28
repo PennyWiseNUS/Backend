@@ -55,6 +55,12 @@ app.use('/api/income', authToken, require('./routes/income'));
 // Expense Extraction route
 app.use('/api/expense', authToken, require('./routes/expense'));
 
+// Notification route
+app.use('/api/notifications', authToken, require('./routes/notification'));
+
+// Start cron jobs
+require('./cronJobs');
+
 mongoose.set('debug', true);
 
 // basic route -- for GET requests (retrieving data)
