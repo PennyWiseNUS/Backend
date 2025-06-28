@@ -8,7 +8,7 @@ router.post('/', async (req, res) => {
     const {amount, category, type, entryDate, notes, isRecurring, recurrenceFrequency, recurrenceEndDate} = req.body;
     // in the event any portion hits an error, wrap the whole thing in a try class
     try {
-        console.log("Backend Posting Start")
+        console.log("Backend Posting Start");
         // check for any missing fields, if present return an error
         if (!amount || !category || !type || !entryDate) {
             console.log("Missing something");
@@ -28,6 +28,37 @@ router.post('/', async (req, res) => {
         };
         console.log("Backend New Entry Creation")
         // else save the entry 
+        let nextReminderDate;
+        if (isRecurring) {
+            const entryDateCopy = new Date(entryDate);
+
+            switch (recurrenceFrequency) {
+                case 'Daily':
+                    console.log("currentDate");
+                    nextReminderDate = new Date(entryDateCopy);
+                    nextReminderDate.setDate(entryDateCopy.getDate() + 1); // set to next day
+                    break;
+                case 'Weekly':
+                    nextReminderDate = new Date(currentDate);
+                    nextReminderDate.setDate(entryDateCopy.getDate() + 7); 
+                    break;
+                case 'Monthly':
+                    nextReminderDate = new Date(currentDate);
+                    nextReminderDate.setMonth(entryDateCopy.getMonth() + 1); 
+                    break;
+                case 'Annually':
+                    nextReminderDate = new Date(currentDate);
+                    nextReminderDate.setFullYear(entryDateCopy.getFullYear() + 1); 
+                    break;
+                default:
+                    nextReminderDate = null;
+                    return res.status(400).json({msg: "Invalid Recurrence Frequency!"});
+            }
+        } else {
+            nextReminderDate = null;
+        }
+        console.log("Next Reminder Date: ", nextReminderDate);
+
         const newEntry = new Entry({
             amount: amountNumber,
             category: category,
@@ -37,7 +68,7 @@ router.post('/', async (req, res) => {
             isRecurring: isRecurring,
             recurrenceFrequency: isRecurring ? recurrenceFrequency : null,
             recurrenceEndDate: isRecurring ? new Date(recurrenceEndDate) : null, 
-            nextReminderDate: isRecurring ? new Date(entryDate) + recurrenceFrequency : null, // set to entryDate initially
+            nextReminderDate: nextReminderDate, // set to entryDate initially
             userId: req.user.user.id // based on the payload 
         });
         console.log("Backend New Entry Successfully Created")
