@@ -6,7 +6,7 @@ require('dotenv').config(); // loads env var from .env to process.env
 
 // setting up of the Express app and choosing the port number
 const app = express(); // main express application
-const port = process.env.PORT; // comes from .env
+const port = process.env.PORT || 5000; // comes from .env
 
 // adding middleware -- a function that runs between receiving a request and sending a response
 app.use(cors()); // for cross-origin requests
