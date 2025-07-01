@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Entry = require('../models/Entry');
+const Notification = require('../models/Notification');
+const { startOfDay } = require('date-fns');
+const { createNotificationForEntry, getNextDate } = require('../utils/helpers');
 
 // for adding an entry
 router.post('/', async (req, res) => {
@@ -8,7 +11,7 @@ router.post('/', async (req, res) => {
     const {amount, category, type, entryDate, notes, isRecurring, recurrenceFrequency, recurrenceEndDate} = req.body;
     // in the event any portion hits an error, wrap the whole thing in a try class
     try {
-        console.log("Backend Posting Start")
+        console.log("Backend Posting Start");
         // check for any missing fields, if present return an error
         if (!amount || !category || !type || !entryDate) {
             console.log("Missing something");
@@ -37,11 +40,20 @@ router.post('/', async (req, res) => {
             isRecurring: isRecurring,
             recurrenceFrequency: isRecurring ? recurrenceFrequency : null,
             recurrenceEndDate: isRecurring ? new Date(recurrenceEndDate) : null, 
+            nextReminderDate: null,
             userId: req.user.user.id // based on the payload 
         });
+        if (req.body.isRecurring) {
+            const entryDateStart = startOfDay(new Date(req.body.entryDate));
+            const nextDate = getNextDate(entryDateStart, req.body.recurrenceFrequency);
+            const nextReminderDate = startOfDay(nextDate);
+            newEntry.nextReminderDate = nextReminderDate <= new Date(req.body.recurrenceEndDate) ? nextReminderDate : null;
+          }
+        console.log(newEntry);
         console.log("Backend New Entry Successfully Created")
         // wait for the newEntry to be saved then output the success message
         await newEntry.save();
+        await createNotificationForEntry(newEntry);
         res.status(201).json({msg: "New Entry saved successfully!"});
     } catch (err) {
         res.status(400).json({msg: 'Error saving Entry', error: err.message})

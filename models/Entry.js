@@ -11,6 +11,7 @@ const EntrySchema = new mongoose.Schema({
     isRecurring: {type: Boolean, default: false},
     recurrenceFrequency: {type: String, enum: ['Daily', 'Weekly', 'Monthly', 'Annually'], default: 'Monthly'},
     recurrenceEndDate: {type: Date},
+    nextReminderDate: {type: Date},
     // user association
     userId: {type: String, required: true},
     }, 
