@@ -51,7 +51,6 @@ router.post('/', async (req, res) => {
         // wait for the newEntry to be saved then output the success message
         await newEntry.save();
         console.log("New Loan Entry Saved");
-        await createNotificationForEntry(newEntry);
         res.status(201).json({msg: "New Entry saved successfully!"});
     } catch (err) {
         console.log('error is here: Loan Entry not able to be saved');
@@ -90,7 +89,6 @@ router.patch('/:id', async (req, res) => {
             return res.status(400).json({ msg: 'Error saving updated loan', error: saveError.message });
         }
         */}
-
         console.log("Loan Successfully Updated");
 
         if (!updatedLoan) {
