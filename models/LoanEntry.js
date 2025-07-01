@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const LoanEntrySchema = new mongoose.Schema({
     amount: {type: Number, required: true},
+    totalRepaymentAmount: {type: Number},
     interestRate: {type: Number, required: true},
     type: {type: String, enum: ['expense', 'income'], required: true},
     entryDate: {type: Date, required: true},

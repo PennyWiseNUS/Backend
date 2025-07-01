@@ -27,10 +27,28 @@ router.post('/', async (req, res) => {
         if (amountNumber < 0) {
             return res.status(400).json({msg: "Invalid Amount: Must be more than 0!"});
         };
+
+        // total repayment amount with interest calculation
+        const startDate = new Date(entryDate);
+        const endDate = new Date(repaymentDate);
+
+        // calc num of months in years
+        const yearDiff = endDate.getFullYear() - startDate.getFullYear();
+        const monthDiff = endDate.getMonth() - startDate.getMonth();
+        const dateDiff = (endDate.getDate() < startDate.getDate()) ? 0 : 1;
+        const numMonths = yearDiff * 12 + monthDiff + dateDiff;
+        const numMonthsInYears = numMonths/12;
+        console.log("Data:", {yearDiff,monthDiff,dateDiff,numMonths,numMonthsInYears});
+
+        // calc interest
+        const interest = amount * interestRate * numMonthsInYears;
+        const totalRepaymentAmount = parseFloat(amount) + interest;
+
         // else save the entry 
         const newEntry = new loanEntry({
             notes: notes,
             amount: amountNumber,
+            totalRepaymentAmount: totalRepaymentAmount,
             type: type,
             entryDate: new Date(entryDate),
             interestRate: interestRate,
