@@ -61,6 +61,9 @@ app.use('/api/notifications', authToken, require('./routes/notification'));
 // Start cron jobs
 require('./cronJobs');
 
+// Goals route
+app.use('/api/goals', authToken, require('./routes/goals'));
+
 mongoose.set('debug', true);
 
 // basic route -- for GET requests (retrieving data)
