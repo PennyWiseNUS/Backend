@@ -64,6 +64,9 @@ require('./cronJobs');
 // Goals route
 app.use('/api/goals', authToken, require('./routes/goals'));
 
+// Suggestions route
+app.use('/api/suggestions', authToken, require('./routes/suggestions'));
+
 mongoose.set('debug', true);
 
 // basic route -- for GET requests (retrieving data)
