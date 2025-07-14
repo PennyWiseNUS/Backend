@@ -67,6 +67,9 @@ app.use('/api/goals', authToken, require('./routes/goals'));
 // Suggestions route
 app.use('/api/suggestions', authToken, require('./routes/suggestions'));
 
+// emergency funds route
+app.use('/api/emergency-funds', authToken, require('./routes/emergencyFund'));
+
 mongoose.set('debug', true);
 
 // basic route -- for GET requests (retrieving data)
