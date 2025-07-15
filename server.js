@@ -18,6 +18,11 @@ console.log("MONGO_URI:", process.env.MONGO_URI);
 console.log("JWT_SECRET:", process.env.JWT_SECRET ? "Loaded" : "Missing");
 */
 
+// health check endpoint, to keep render running
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
 // connecting to MongoDB using Mongoose
 // mongoDB connection string
 const uri = process.env.MONGO_URI;
@@ -60,6 +65,15 @@ app.use('/api/notifications', authToken, require('./routes/notification'));
 
 // Start cron jobs
 require('./cronJobs');
+
+// Goals route
+app.use('/api/goals', authToken, require('./routes/goals'));
+
+// Suggestions route
+app.use('/api/suggestions', authToken, require('./routes/suggestions'));
+
+// emergency funds route
+app.use('/api/emergency-funds', authToken, require('./routes/emergencyFund'));
 
 mongoose.set('debug', true);
 
