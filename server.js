@@ -18,6 +18,11 @@ console.log("MONGO_URI:", process.env.MONGO_URI);
 console.log("JWT_SECRET:", process.env.JWT_SECRET ? "Loaded" : "Missing");
 */
 
+// health check endpoint, to keep render running
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
 // connecting to MongoDB using Mongoose
 // mongoDB connection string
 const uri = process.env.MONGO_URI;
