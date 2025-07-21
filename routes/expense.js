@@ -6,7 +6,8 @@ const Entry = require('../models/Entry');
 // GET /api/expense — return expense transactions and monthly breakdown
 router.get('/', async (req, res) => {
     try {
-      const userID = req.user.id;
+      const userID = req.user.user.id;
+      console.log("userId:", userID);
   
       const today = new Date();
       const currentMonth = today.getMonth();
@@ -15,7 +16,7 @@ router.get('/', async (req, res) => {
       const monthsToTrack = 6;
       // Fetch 6 months expenses
       const expenseTransactions = await Entry.find({
-        userID,
+        userId: userID,
         type: 'expense',
         entryDate: {
           $gte: new Date(currentYear, currentMonth - monthsToTrack, 1),
@@ -33,7 +34,7 @@ router.get('/', async (req, res) => {
   
         const [expense] = await Promise.all([
           Entry.aggregate([
-            { $match: { userID, type: 'expense', entryDate: { $gte: monthStart, $lt: monthEnd } } },
+            { $match: { userId: userID, type: 'expense', entryDate: { $gte: monthStart, $lt: monthEnd } } },
             { $group: { _id: null, total: { $sum: '$amount' } } },
           ]),
         ]);

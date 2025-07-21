@@ -15,13 +15,13 @@ const authToken = (req, res, next) => {
     // if token provided, proceed to do verification using jwt.verify
     // callback function will be accounting for valid: user and invalid:err
     console.log('Token: ', token)
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
         if (err) {
             console.log('Token verification failed: ', err.message)
             return res.status(403).json({msg: "Incorrect token"});
         } else {
-            console.log('Decoded user: ', user);
-            req.user = user;
+            console.log('Decoded user: ', decodedToken);
+            req.user = decodedToken;
             next();
         };
     });
