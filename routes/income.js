@@ -10,7 +10,8 @@ const Entry = require('../models/Entry');
 router.get('/', async (req, res) => {
     try {
         // getting the user id from current user making the request (based on the access token created in auth.js) 
-        const userID = req.user.id;
+        const userID = req.user.user.id;
+        console.log(userID)
 
         // to ensure dynamic running, set date to current day, changes daily
         const today = new Date();
@@ -21,7 +22,7 @@ router.get('/', async (req, res) => {
         // fetching all income transactions from mongoDB for current month
         // for transaction listing
         const incomeTransactions = await Entry.find({
-            userID, type: 'income',
+            userId: userID, type: 'income',
             entryDate: {
                 $gte: new Date(currentYear, currentMonth - 1, 1), // first day of current month
                 $lt: new Date(currentYear, currentMonth, 1) // first day of next month
@@ -40,12 +41,12 @@ router.get('/', async (req, res) => {
             // querying both income and expenses in parallel
             const [income, expense] = await Promise.all([
                 Entry.aggregate([
-                    { $match: {userID, type: "income", entryDate: {$gte: monthStart, $lt: monthEnd}} },
+                    { $match: {userId: userID, type: "income", entryDate: {$gte: monthStart, $lt: monthEnd}} },
                     // _id is the grouping key (simple terms : group all documents together into a single group)
                     { $group: {_id: null, total: {$sum: '$amount'}} },
                 ]),
                 Entry.aggregate([
-                    { $match: {userID, type: "expense", entryDate: {$gte: monthStart, $lt: monthEnd}} },
+                    { $match: {userId: userID, type: "expense", entryDate: {$gte: monthStart, $lt: monthEnd}} },
                     { $group: {_id: null, total: {$sum: '$amount'}} },
                 ]),
             ]);
