@@ -47,6 +47,7 @@ app.use('/api/auth', require('./routes/auth'));
 
 // AddEntry route
 const authToken = require('./middleware/authToken');
+app.use('/api/profile', authToken, require('./routes/profile'));
 // first arg: base url path midware and route handlers will apply to
 // second arg: handles user verification - whether access is available
 // third arg: adding a new Entry logic or getting an entry 
