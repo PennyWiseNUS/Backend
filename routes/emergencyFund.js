@@ -6,7 +6,7 @@ const EmergencyFund = require('../models/EmergencyFund');
 router.get('/', async (req, res) => {
     const currentFund = await EmergencyFund.findOne({userId: req.user.user.id});
     if (!currentFund) {
-        return res.status(404).json({messgae: "No emergency fund found."});
+        return res.status(404).json({message: "No emergency fund found."});
     }
     res.json(currentFund);
 });
