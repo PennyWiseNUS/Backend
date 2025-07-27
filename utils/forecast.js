@@ -22,9 +22,11 @@ function getLastNMonthsData(transactions, n, category) {
     return results;
   }
   
-  export function forecastNextMonth(transactions, category) {
+function forecastNextMonth(transactions, category) {
     const last3 = getLastNMonthsData(transactions, 3, category);
     const avg = last3.reduce((a, b) => a + b, 0) / (last3.length || 1);
     return Math.round(avg);
   }
+
+module.exports = { forecastNextMonth, getLastNMonthsData };
   
