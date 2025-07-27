@@ -17,5 +17,6 @@ app.use('/api/expense', require('./routes/expense'));
 
 app.use('/api/goals', require('./routes/goals'));
 
+app.use('/api/notifications', require('./routes/notification'));
 
 module.exports = app;
