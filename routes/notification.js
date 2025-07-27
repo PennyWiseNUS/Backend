@@ -30,7 +30,7 @@ router.delete('/:id', async (req, res) => {
   try {
     const deleted = await Notification.findOneAndDelete({
       _id: req.params.id,
-      userId: req.user.user.id, // Secure: ensure only owner can delete
+      userId: req.user.user.id,
     });
 
     if (!deleted) {
