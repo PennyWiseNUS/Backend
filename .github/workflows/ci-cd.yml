@@ -1,0 +1,59 @@
+name: CI (Build & Tests)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      # If you have a monorepo or both frontend & backend, you can add `--workspaces`
+      # or cd into folders. For a single app, this is fine.
+
+      - name: Lint (optional)
+        run: |
+          if npm run -s | grep -q "^lint$"; then
+            npm run lint
+          else
+            echo "No lint script, skipping."
+          fi
+
+      - name: Build (React web) - optional for RN
+        run: |
+          if npm run -s | grep -q "^build$"; then
+            npm run build
+          else
+            echo "No build script, skipping."
+          fi
+
+      - name: Run tests
+        run: npm test
+
+      - name: Upload coverage (if produced)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: |
+            coverage/**
+            junit.xml
+          if-no-files-found: ignore
